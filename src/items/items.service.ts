@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Item } from './item.model';
 import { ItemStatus } from './item-status.enum';
 import { CreateItemDto } from './dto/create-item.dto';
 import { v4 as uuid } from 'uuid';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class ItemsService {
@@ -19,7 +20,7 @@ export class ItemsService {
     return found;
   }
 
-  create(createItemDto: CreateItemDto): Item {
+  create(createItemDto: CreateItemDto, user: User): Item {
     const item: Item = {
       id: uuid(),
       ...createItemDto,
@@ -28,13 +29,20 @@ export class ItemsService {
     return item;
   }
 
-  updateStatus(id: string): Item {
-    const item = this.findById(id);
+  updateStatus(id: string, user: User): Item {
+    // const item = await this.findById(id);
+    // if (item.userId === user.id) {
+    //   throw new BadRequestException('自身の商品を購入することはできません');
+    // }
     item.status = ItemStatus.SOLD_OUT;
     return item;
   }
 
-  delete(id: string): void {
+  async delete(id: string, user: User): Promise<void> {
+    // const item = await this.findById(id);
+    // if (item.userId !== user.id) {
+    //   throw new BadRequestException('他人の商品は削除できません');
+    // }
     this.items = this.items.filter((item) => item.id !== id);
   }
 }
