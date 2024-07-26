@@ -13,6 +13,8 @@ import { ItemsService } from './items.service';
 import { Item } from './item.model';
 import { CreateItemDto } from './dto/create-item.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { User } from 'src/entities/user.entity';
 
 @Controller('items')
 export class ItemsController {
@@ -30,7 +32,7 @@ export class ItemsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createItemDto: CreateItemDto): Item {
+  create(@Body() createItemDto: CreateItemDto, @GetUser() user: User): Item {
     return this.itemsService.create(createItemDto);
   }
 
